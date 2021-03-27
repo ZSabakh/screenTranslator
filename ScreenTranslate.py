@@ -18,6 +18,11 @@ while True:
                     break
                 time.sleep(0.002)
 
+            if(endPointCoordinates[0] < startPointCoordinates[0]):
+                startPointCoordinates[0], endPointCoordinates[0] = endPointCoordinates[0], startPointCoordinates[0]
+            if(endPointCoordinates[1] < startPointCoordinates[1]):
+                startPointCoordinates[1], endPointCoordinates[1] = endPointCoordinates[1], startPointCoordinates[1]
+
             image = ImageGrab.grab(bbox=(
                 startPointCoordinates[0], startPointCoordinates[1], endPointCoordinates[0], endPointCoordinates[1]))
             image.save('sc.png')
