@@ -7,6 +7,10 @@ import pytesseract
 import tkinter as tk
 import cv2
 import imutils
+from google_trans_new import google_translator
+
+
+translator = google_translator()
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 root = tk.Tk()
@@ -22,17 +26,18 @@ def change_label(label):
         image = ImageGrab.grab(bbox=(
             start_point_coordinates[0], start_point_coordinates[1], end_point_coordinates[0], end_point_coordinates[1]))
         image.save('sc.png')
-
         processed_image = cv2.imread('sc.png')
-        processed_image = imutils.resize(processed_image, width=700)
+        processed_image = cv2.cvtColor(processed_image, cv2.COLOR_BGR2RGB)
         gray = cv2.cvtColor(processed_image, cv2.COLOR_BGR2GRAY)
         thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
         thresh = cv2.GaussianBlur(thresh, (3, 3), 0)
 
-        scanned_text = pytesseract.image_to_string(thresh, lang='eng', config='--psm 6').replace("", "").replace("\n", "")
+        scanned_text = pytesseract.image_to_string(thresh, lang='eng', config='boxes=False').replace("", "").replace("\n", " ")
+        print(translator.translate(scanned_text, lang_src='en', lang_tgt='ru')
+              )
         print(scanned_text)
         label.config(text=scanned_text)
-        root.after(500, scanImage)
+        root.after(1000, scanImage)
 
     scanImage()
 
